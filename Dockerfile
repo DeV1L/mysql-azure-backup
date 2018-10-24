@@ -1,16 +1,16 @@
-FROM ubuntu:latest
+FROM ubuntu:bionic
 
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update -y -q && \
-  apt-get install -y mysql-client-5.7 nodejs-legacy curl wget npm && \
+  apt-get install -y mysql-client-5.7 wget apt-transport-https curl gnupg && \
+  echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ bionic main" | \
+  tee /etc/apt/sources.list.d/azure-cli.list && \
+  curl -L https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
+  apt-get update -y -q && \
+  apt-get install -y azure-cli && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/*
-
-RUN npm install -g n azure-cli
-RUN n 0.12.7
-
-RUN azure telemetry --disable
 
 ADD start.sh /start.sh
 RUN chmod 0755 /start.sh

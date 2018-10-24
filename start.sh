@@ -27,7 +27,7 @@ if [ "$1" == "backup" ]; then
         mysqldump --force --opt --host=$MYSQL_HOST --port=$MYSQL_PORT --user=$MYSQL_USER --databases $db ${PASS_OPT} | gzip > "/tmp/$db.gz"
 
         if [ $? == 0 ]; then
-            yes | /usr/local/bin/azure storage blob upload /tmp/$db.gz $AZURE_STORAGE_CONTAINER -c "DefaultEndpointsProtocol=https;BlobEndpoint=https://$AZURE_STORAGE_ACCOUNT.blob.core.windows.net/;AccountName=$AZURE_STORAGE_ACCOUNT;AccountKey=$AZURE_STORAGE_ACCESS_KEY"
+            az storage blob upload --file /tmp/$db.gz --account-name $AZURE_STORAGE_ACCOUNT --container-name $AZURE_STORAGE_CONTAINER --account-key $AZURE_STORAGE_ACCESS_KEY --name $db/$(date +%Y_%m_%d).gz
 
             if [ $? == 0 ]; then
                 rm /tmp/$db.gz
@@ -42,7 +42,7 @@ elif [ "$1" == "restore" ]; then
     if [ -n "$2" ]; then
         archives=$2.gz
     else
-        archives=`/usr/local/bin/azure storage blob list -a $AZURE_STORAGE_ACCOUNT -k "$AZURE_STORAGE_ACCESS_KEY" $AZURE_STORAGE_CONTAINER | grep ".gz" | awk '{print $2}'`
+        archives=`az storage blob list -a $AZURE_STORAGE_ACCOUNT -k "$AZURE_STORAGE_ACCESS_KEY" $AZURE_STORAGE_CONTAINER | grep ".gz" | awk '{print $2}'`
     fi
 
     for archive in $archives; do
@@ -51,7 +51,7 @@ elif [ "$1" == "restore" ]; then
         echo "restoring $archive"
         echo "...transferring"
 
-        yes | /usr/local/bin/azure storage blob download  -a $AZURE_STORAGE_ACCOUNT -k "$AZURE_STORAGE_ACCESS_KEY" $AZURE_STORAGE_CONTAINER $archive $tmp
+        yes | az storage blob download  -a $AZURE_STORAGE_ACCOUNT -k "$AZURE_STORAGE_ACCESS_KEY" $AZURE_STORAGE_CONTAINER $archive $tmp
 
         if [ $? == 0 ]; then
             echo "...restoring"

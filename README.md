@@ -1,7 +1,7 @@
 # mysql-azure-backup
 Image prepared to backup MySQL database to Microsoft Azure.
 
-This image is heavily based on [iainmckay/docker-mysql-backup](https://github.com/iainmckay/docker-mysql-backup).
+This image is heavily based on [NeowayLabs/mysql-azure-backup](https://github.com/NeowayLabs/mysql-azure-backup).
 
 There is a custom build available on the public registry at [neowaylabs/mysql-azure-backup](https://registry.hub.docker.com/u/neowaylabs/mysql-azure-backup/).
 
