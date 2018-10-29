@@ -33,9 +33,11 @@ if [ "$1" == "backup" ]; then
                 rm /tmp/$db.gz
             else
                 >&2 echo "couldn't transfer $db.gz to Azure"
+				exit 1
             fi
         else
             >&2 echo "couldn't dump $db"
+			exit 1
         fi
     done
 elif [ "$1" == "restore" ]; then
