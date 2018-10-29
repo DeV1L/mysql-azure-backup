@@ -27,7 +27,7 @@ if [ "$1" == "backup" ]; then
         mysqldump --force --opt --host=$MYSQL_HOST --port=$MYSQL_PORT --user=$MYSQL_USER --databases $db ${PASS_OPT} | gzip > "/tmp/$db.gz"
 
         if [ $? == 0 ]; then
-            az storage blob upload --file /tmp/$db.gz --account-name $AZURE_STORAGE_ACCOUNT --container-name $AZURE_STORAGE_CONTAINER --account-key $AZURE_STORAGE_ACCESS_KEY --name $db/$(date +%Y_%m_%d).gz
+            az storage blob upload --file /tmp/$db.gz --account-name $AZURE_STORAGE_ACCOUNT --container-name $AZURE_STORAGE_CONTAINER --account-key $AZURE_STORAGE_ACCESS_KEY --name $db/$(date +%Y_%m_%d).gz --verbose
 
             if [ $? == 0 ]; then
                 rm /tmp/$db.gz
